@@ -4,8 +4,9 @@ import uvicorn
 from src.settings.settings import BackendBaseSettings
 from src.utils import RootLoggerConfig
 import logging
+from src.routers.v1.document import Document_Api_Router
 
-
+# Application class
 class DocSyncApp:
     def __init__(self):
         RootLoggerConfig()
@@ -35,7 +36,7 @@ class DocSyncApp:
             return {"status": "healthy"}
 
         # Include API router when needed
-        # self.app.include_router(router, prefix="/api/v1")
+        self.app.include_router(Document_Api_Router, tags=["Documents"])
 
     def run(self):
         """Run the application server"""

@@ -1,5 +1,5 @@
 from pymongo import MongoClient
-from constants import MONGO_URI
+from src.constants import MONGO_URI
 from functools import lru_cache
 
 

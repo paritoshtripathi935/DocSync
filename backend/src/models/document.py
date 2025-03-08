@@ -10,7 +10,3 @@ class Document(BaseModel):
     tags: List[str]
     created_at: Optional[str]
     updated_at: Optional[str]
-
-    class Config:
-        orm_mode = True
-        table = 'documents'

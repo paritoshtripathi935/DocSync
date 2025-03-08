@@ -1,5 +1,5 @@
 import redis
-from constants import REDIS_URI
+from src.constants import REDIS_URI
 from functools import lru_cache
 
 
