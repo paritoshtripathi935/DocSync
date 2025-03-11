@@ -1,5 +1,5 @@
 from pydantic import BaseModel
-from typing import List, Optional
+from typing import List, Optional, Dict
 
 
 class Document(BaseModel):
@@ -10,3 +10,10 @@ class Document(BaseModel):
     tags: List[str]
     created_at: Optional[str]
     updated_at: Optional[str]
+
+
+class DocumentList(BaseModel):
+    items: List[Document]
+    total: int
+    skip: int
+    limit: int

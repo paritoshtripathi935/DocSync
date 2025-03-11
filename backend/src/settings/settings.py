@@ -35,7 +35,9 @@ class BackendBaseSettings:
     NUMBER_OF_WORKERS: int = 4
     LOG_LEVEL: int = logging.INFO
     LOG_FORMAT: str = "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
-    LOG_FILE: str = f"app_{ENVIRONMENT}_{datetime.now().strftime('%Y%m%d')}.log"
+    LOG_FILE: str = f"logs/app_{ENVIRONMENT}_{datetime.now().strftime('%Y%m%d')}.log"
+    os.makedirs("logs", exist_ok=True)
+    
     DATE_FORMAT: str = "%Y-%m-%d %H:%M:%S"
     BACKUP: int = 7
     
