@@ -1,0 +1,24 @@
+services:
+  - type: web
+    name: docsync-backend
+    env: python
+    plan: free
+    rootDir: backend
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn -k uvicorn.workers.UvicornWorker -w 2 -b 0.0.0.0:$PORT --timeout 60 --graceful-timeout 30 --keep-alive 65 main:app
+    healthCheckPath: /health
+    envVars:
+      - key: ENVIRONMENT
+        value: production
+      - key: PYTHON_VERSION
+        value: 3.12.7
+      - key: MONGO_URI
+        sync: false
+      - key: REDIS_URI
+        sync: false
+      # e.g. https://your-instance.clerk.accounts.dev (leave unset only for local dev: disables auth)
+      - key: CLERK_JWT_ISSUER
+        sync: false
+      # comma-separated frontend origins, e.g. https://docsync.netlify.app
+      - key: ALLOWED_ORIGINS
+        sync: false

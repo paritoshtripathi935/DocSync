@@ -1,0 +1,82 @@
+@import "tailwindcss";
+
+/* Theme tokens — ink-violet accent marks links, the active note and primary
+   actions only; everything else stays in the neutral paper/ink stack. */
+:root,
+[data-theme="dark"] {
+  --bg: #0f0e13;
+  --surface: #15141b;
+  --raised: #1c1a24;
+  --hover: #24212e;
+  --border: #2e2a3a;
+  --text: #ece9f3;
+  --muted: #aaa5b8;
+  --dim: #8a8599;      /* 5:1 on surface */
+  --accent: #a68aff;
+  --accent-soft: rgba(166, 138, 255, 0.15);
+  --ink: #12082b;      /* text on accent */
+  --danger: #f87171;
+  color-scheme: dark;
+}
+
+[data-theme="light"] {
+  --bg: #faf8f4;
+  --surface: #ffffff;
+  --raised: #f4f1eb;
+  --hover: #ece7de;
+  --border: #ddd6c9;
+  --text: #1c1a22;
+  --muted: #514c5b;
+  --dim: #645e6d;      /* 6:1 on white */
+  --accent: #6438d9;   /* 6.4:1 with white text */
+  --accent-soft: rgba(100, 56, 217, 0.1);
+  --ink: #ffffff;
+  --danger: #c62828;
+  color-scheme: light;
+}
+
+@theme inline {
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-raised: var(--raised);
+  --color-hover: var(--hover);
+  --color-line: var(--border);
+  --color-fg: var(--text);
+  --color-muted: var(--muted);
+  --color-dim: var(--dim);
+  --color-accent: var(--accent);
+  --color-accent-soft: var(--accent-soft);
+  --color-ink: var(--ink);
+  --color-danger: var(--danger);
+  --font-sans: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-serif: 'Newsreader', Georgia, 'Times New Roman', serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, monospace;
+}
+
+html, body { background: var(--bg); color: var(--text); }
+body { margin: 0; font-family: var(--font-sans); -webkit-font-smoothing: antialiased; }
+::selection { background: var(--accent-soft); }
+@layer base { :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; } }
+
+/* Rendered markdown */
+.prose-note { font-family: var(--font-serif); font-size: 18px; line-height: 1.7; }
+.prose-note > * + * { margin-top: 0.9em; }
+.prose-note h1, .prose-note h2, .prose-note h3 { font-weight: 600; line-height: 1.25; margin-top: 1.4em; }
+.prose-note h1 { font-size: 1.8em; } .prose-note h2 { font-size: 1.4em; } .prose-note h3 { font-size: 1.15em; }
+.prose-note a { color: var(--accent); text-decoration: underline; text-underline-offset: 3px; text-decoration-color: var(--accent-soft); }
+.prose-note a:hover { text-decoration-color: var(--accent); }
+.prose-note a.missing { color: var(--dim); text-decoration-style: dashed; }
+.prose-note ul { list-style: disc; padding-left: 1.4em; } .prose-note ol { list-style: decimal; padding-left: 1.4em; }
+.prose-note blockquote { border-left: 3px solid var(--border); padding-left: 1em; color: var(--muted); }
+.prose-note code { font-family: var(--font-mono); font-size: 0.82em; background: var(--raised); padding: 0.15em 0.35em; border-radius: 4px; }
+.prose-note pre { background: var(--raised); border: 1px solid var(--border); border-radius: 8px; padding: 1em; overflow-x: auto; }
+.prose-note pre code { background: none; padding: 0; }
+.prose-note table { border-collapse: collapse; font-family: var(--font-sans); font-size: 14px; }
+.prose-note th, .prose-note td { border: 1px solid var(--border); padding: 6px 10px; }
+.prose-note hr { border: 0; border-top: 1px solid var(--border); }
+.prose-note li.task-list-item { list-style: none; margin-left: -1.3em; }
+.prose-note input[type="checkbox"] { accent-color: var(--accent); margin-right: 0.4em; }
+
+@keyframes rise { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+.rise { animation: rise 400ms cubic-bezier(0.2, 0, 0.2, 1) both; }
+@media (prefers-reduced-motion: reduce) { .rise { animation: none; } }

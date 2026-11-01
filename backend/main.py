@@ -1,5 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+import os
 import uvicorn
 from src.settings.settings import BackendBaseSettings
 from src.utils import RootLoggerConfig
@@ -12,6 +13,8 @@ class DocSyncApp:
         RootLoggerConfig()
         logging.info("Setting up application")
         self.settings = BackendBaseSettings()
+        if not os.getenv("CLERK_JWT_ISSUER"):
+            logging.warning("CLERK_JWT_ISSUER not set: auth DISABLED, all requests act as user 'local'")
         self.app = FastAPI(**self.settings.set_backend_app_attributes)
         self._setup_middleware()
         self._setup_routes()
@@ -21,7 +24,7 @@ class DocSyncApp:
         logging.info("Setting up middleware")
         self.app.add_middleware(
             CORSMiddleware,
-            allow_origins=["http://localhost:5173"],
+            allow_origins=os.getenv("ALLOWED_ORIGINS", "http://localhost:5173").split(","),
             allow_credentials=True,
             allow_methods=["*"],
             allow_headers=["*"],
