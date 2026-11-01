@@ -55,12 +55,21 @@ DocSync/
    ```
 
 4. **Set up environment variables**
-   Create a `.env` file in the backend directory:
-   ```env
-   MONGODB_URI=mongodb://localhost:27017
-   REDIS_URL=redis://localhost:6379
-   RABBITMQ_URL=amqp://guest:guest@localhost:5672
+   ```bash
+   cp backend/.env.example backend/.env.local   # git-ignored; edit values
    ```
+
+   | Variable | Required | Purpose |
+   |---|---|---|
+   | `MONGO_URI` | yes | MongoDB connection string |
+   | `REDIS_URI` | yes | Redis connection string |
+   | `CLERK_JWT_ISSUER` | prod | Clerk Frontend API URL (e.g. `https://xxx.clerk.accounts.dev`). Session JWTs are verified against `<issuer>/.well-known/jwks.json`. **Unset = auth disabled**, every request acts as user `local` (local dev only). |
+   | `ALLOWED_ORIGINS` | prod | Comma-separated CORS origins (default `http://localhost:5173`) |
+   | `CLERK_JWKS_TTL_SECONDS` | no | JWKS cache TTL (default 3600) |
+   | `ENVIRONMENT` | no | `development` (default) exposes `/docs`; anything else hides it |
+   | `PORT` | no | Listen port (default 8000) |
+
+   All `/v1/documents/*` endpoints require `Authorization: Bearer <Clerk session JWT>` when auth is enabled. Documents and history are scoped to the caller; other users' documents return 404.
 
 5. **Run the application**
    ```bash
@@ -68,7 +77,7 @@ DocSync/
    python main.py
    ```
 
-The server will start at `http://localhost:8000`
+The server will start at `http://localhost:8000` (health check: `/health`).
 
 ## 📚 API Documentation
 
@@ -79,16 +88,17 @@ Once the server is running, visit:
 ## 🧪 Running Tests
 
 ```bash
-pytest backend/tests
+pip install pytest mongomock fakeredis
+cd backend && pytest tests/test_auth_and_isolation.py
 ```
+
+(`tests/test_api.py` is a live-server suite and needs the app running on localhost:8000.)
 
 ## 📦 Deployment
 
-The application can be deployed using Docker:
+**Render** (backend): `backend/render.yaml` is a Blueprint (rootDir `backend`, gunicorn + uvicorn workers, health check `/health`). Create a Blueprint from the repo, then set the secret env vars in the dashboard: `MONGO_URI`, `REDIS_URI` (managed Mongo/Redis, e.g. Atlas + Upstash/Render Redis), `CLERK_JWT_ISSUER`, `ALLOWED_ORIGINS` (your frontend URL). Do not deploy without `CLERK_JWT_ISSUER`, or the API is open to everyone as one shared user.
 
-```bash
-docker compose up -d
-```
+**Docker** (local stack): `cd backend && docker compose up -d`
 
 ## 📜 License
 
