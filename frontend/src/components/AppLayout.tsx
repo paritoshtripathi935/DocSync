@@ -49,27 +49,27 @@ export default function AppLayout() {
         </div>
         <div className="px-3 space-y-2">
           <button onClick={newNote} disabled={creating}
-            className="w-full inline-flex items-center justify-center gap-2 rounded-lg bg-accent text-ink h-9 text-sm font-semibold cursor-pointer disabled:opacity-60">
+            className="w-full inline-flex items-center justify-center gap-2 rounded-lg bg-accent text-ink h-9 pointer-coarse:h-11 text-small font-semibold cursor-pointer disabled:opacity-60">
             {creating ? <Loader2 size={15} className="animate-spin" /> : <Plus size={16} />} New note
           </button>
           <div className="relative">
             <Search size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-dim" />
             <label htmlFor="search" className="sr-only">Search notes</label>
             <input id="search" value={q} onChange={e => setQ(e.target.value)} placeholder="Search notes"
-              className="w-full rounded-lg bg-raised border border-line pl-9 pr-8 h-9 text-sm outline-none focus:border-accent placeholder:text-dim" />
+              className="w-full rounded-lg bg-raised border border-line-strong pl-8 pr-8 h-9 pointer-coarse:h-11 text-small outline-none focus:border-accent placeholder:text-dim" />
             {q && <button onClick={() => setQ('')} aria-label="Clear search" className="absolute right-2 top-1/2 -translate-y-1/2 text-dim hover:text-fg cursor-pointer"><X size={15} /></button>}
           </div>
         </div>
-        <p className="px-4 pt-5 pb-2 text-[11px] font-semibold uppercase tracking-wider text-dim">
+        <p className="px-4 pt-6 pb-2 text-caption font-semibold uppercase tracking-wider text-dim">
           {searching ? `${list.length} result${list.length === 1 ? '' : 's'}` : 'Notes'}
         </p>
         <nav className="flex-1 overflow-y-auto px-2 pb-3 space-y-0.5">
-          {loading && !searching && <p className="px-3 py-2 text-sm text-dim flex items-center gap-2"><Loader2 size={14} className="animate-spin" /> Loading…</p>}
-          {!loading && list.length === 0 && <p className="px-3 py-2 text-sm text-dim">{searching ? 'Nothing matches.' : 'No notes yet.'}</p>}
+          {loading && !searching && <p className="px-3 py-2 text-small text-dim flex items-center gap-2"><Loader2 size={14} className="animate-spin" /> Loading…</p>}
+          {!loading && list.length === 0 && <p className="px-3 py-2 text-small text-dim">{searching ? 'Nothing matches.' : 'No notes yet.'}</p>}
           {list.map(n => (
             <NavLink key={n.id} to={`/notes/${n.id}`} className={item}>
-              <span className="block text-sm font-medium truncate">{n.title || 'Untitled'}</span>
-              <span className="block text-xs text-dim truncate">
+              <span className="block text-small font-medium truncate">{n.title || 'Untitled'}</span>
+              <span className="block text-caption text-dim truncate">
                 {ago(n.updated_at)}{n.tags.length > 0 && ` · ${n.tags.map(t => `#${t}`).join(' ')}`}
               </span>
             </NavLink>

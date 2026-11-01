@@ -118,8 +118,8 @@ export default function NotePage() {
     } catch (e) { setSaveError((e as Error).message); }
   }
 
-  if (loadError) return <div className="p-10 max-w-xl"><ErrorNote message={loadError} /><Link to="/" className="mt-4 inline-block text-sm text-accent">Back to notes</Link></div>;
-  if (!note) return <p className="p-10 flex items-center gap-2 text-sm text-dim"><Loader2 size={15} className="animate-spin" /> Opening note…</p>;
+  if (loadError) return <div className="p-12 max-w-xl"><ErrorNote message={loadError} /><Link to="/" className="mt-4 inline-block text-small text-accent">Back to notes</Link></div>;
+  if (!note) return <p className="p-12 flex items-center gap-2 text-small text-dim"><Loader2 size={15} className="animate-spin" /> Opening note…</p>;
 
   const title = draft.title.trim() || 'Untitled';
   const backlinks = notes.filter(n => n.id !== id && linksTo(n.content, title));
@@ -127,35 +127,35 @@ export default function NotePage() {
   const status = saving ? 'Saving…' : saveError ? 'Not saved' : dirty ? 'Unsaved changes' : `Saved · v${note.version}`;
 
   const tab = (m: 'write' | 'preview', Icon: typeof Eye, label: string) => (
-    <button onClick={() => setMode(m)} aria-pressed={mode === m}
-      className={`inline-flex items-center gap-1.5 rounded-md px-2.5 h-7 text-xs font-medium cursor-pointer ${mode === m ? 'bg-surface text-fg shadow-sm' : 'text-muted hover:text-fg'}`}>
-      <Icon size={13} /> {label}
+    <button onClick={() => setMode(m)} aria-pressed={mode === m} aria-label={label}
+      className={`inline-flex items-center gap-2 rounded-md px-3 h-7 pointer-coarse:h-11 text-caption font-medium cursor-pointer ${mode === m ? 'bg-surface text-fg shadow-sm' : 'text-muted hover:text-fg'}`}>
+      <Icon size={13} /> <span className="hidden sm:inline">{label}</span>
     </button>
   );
 
   return (
     <div className="min-h-full flex flex-col">
       <header className="sticky top-0 z-10 flex items-center gap-2 border-b border-line bg-bg/90 backdrop-blur px-4 h-14">
-        <Link to="/" aria-label="All notes" className="md:hidden h-9 w-9 grid place-items-center rounded-lg text-muted hover:bg-hover"><ArrowLeft size={17} /></Link>
-        <span role="status" className={`text-xs ${saveError ? 'text-danger' : 'text-dim'} truncate`}>{status}</span>
+        <Link to="/" aria-label="All notes" className="md:hidden h-9 pointer-coarse:h-11 w-9 pointer-coarse:w-11 grid place-items-center rounded-lg text-muted hover:bg-hover"><ArrowLeft size={17} /></Link>
+        <span role="status" className={`text-caption ${saveError ? 'text-danger' : 'text-dim'} truncate`}>{status}</span>
         <div className="ml-auto flex items-center gap-1">
           <div className="flex rounded-lg bg-raised p-0.5">{tab('write', PenLine, 'Write')}{tab('preview', Eye, 'Preview')}</div>
           <button onClick={() => setPanelOpen(o => !o)} aria-label="Links and history" aria-pressed={panelOpen}
-            className="xl:hidden h-9 w-9 grid place-items-center rounded-lg text-muted hover:text-fg hover:bg-hover cursor-pointer"><Info size={17} /></button>
-          <button onClick={del} aria-label="Delete note" className="h-9 w-9 grid place-items-center rounded-lg text-muted hover:text-danger hover:bg-hover cursor-pointer"><Trash2 size={16} /></button>
+            className="xl:hidden h-9 pointer-coarse:h-11 w-9 pointer-coarse:w-11 grid place-items-center rounded-lg text-muted hover:text-fg hover:bg-hover cursor-pointer"><Info size={17} /></button>
+          <button onClick={del} aria-label="Delete note" className="h-9 pointer-coarse:h-11 w-9 pointer-coarse:w-11 grid place-items-center rounded-lg text-muted hover:text-danger hover:bg-hover cursor-pointer"><Trash2 size={16} /></button>
         </div>
       </header>
 
       {saveError && <div className="px-6 pt-4"><ErrorNote message={saveError} /></div>}
 
       <div className="flex-1 xl:grid xl:grid-cols-[1fr_288px]">
-        <article className="mx-auto w-full max-w-3xl px-6 sm:px-10 py-10">
+        <article className="mx-auto w-full max-w-[40rem] px-4 sm:px-8 py-12">
           <label htmlFor="title" className="sr-only">Title</label>
           <input id="title" value={draft.title} onChange={e => setDraft(d => ({ ...d, title: e.target.value }))} placeholder="Untitled"
-            className="w-full bg-transparent font-serif text-[34px] sm:text-[40px] font-medium leading-tight outline-none placeholder:text-dim" />
+            className="w-full py-1 bg-transparent font-serif text-h2 sm:text-h1 font-medium outline-none placeholder:text-dim" />
           <label htmlFor="tags" className="sr-only">Tags</label>
           <input id="tags" value={draft.tags} onChange={e => setDraft(d => ({ ...d, tags: e.target.value }))} placeholder="Add tags, comma-separated"
-            className="mt-2 w-full bg-transparent text-sm text-muted outline-none placeholder:text-dim" />
+            className="mt-2 w-full py-2 pointer-coarse:py-3 bg-transparent text-small text-muted outline-none placeholder:text-dim" />
           <div className="mt-8">
             {mode === 'write' ? (
               <>
@@ -163,7 +163,7 @@ export default function NotePage() {
                 <textarea id="body" value={draft.content} autoFocus={!draft.content}
                   onChange={e => setDraft(d => ({ ...d, content: e.target.value }))}
                   placeholder={'Start writing in markdown…\n\nLink another note with [[Its title]].'}
-                  className="w-full min-h-[60vh] [field-sizing:content] resize-none bg-transparent font-mono text-[14px] leading-7 outline-none placeholder:text-dim" />
+                  className="w-full min-h-[60vh] [field-sizing:content] resize-none bg-transparent font-mono text-small leading-7 outline-none placeholder:text-dim" />
               </>
             ) : draft.content.trim() ? (
               <MarkdownView content={draft.content} notes={notes} onMissing={openOrCreate} />
@@ -173,7 +173,7 @@ export default function NotePage() {
           </div>
         </article>
 
-        <aside className={`${panelOpen ? 'block' : 'hidden'} xl:block border-t xl:border-t-0 xl:border-l border-line px-5 py-8 space-y-8 text-sm`}>
+        <aside className={`${panelOpen ? 'block' : 'hidden'} xl:block border-t xl:border-t-0 xl:border-l border-line px-6 py-8 space-y-8 text-small`}>
           <Panel title={`Backlinks · ${backlinks.length}`}>
             {backlinks.length === 0 ? <Empty>No notes link here yet. Type [[{title}]] in another note.</Empty> :
               backlinks.map(n => <Link key={n.id} to={`/notes/${n.id}`} className="block py-1 text-accent hover:underline truncate">{n.title}</Link>)}
@@ -193,9 +193,9 @@ export default function NotePage() {
               <ol className="space-y-0.5">
                 {history.map(v => (
                   <li key={v._id ?? v.version}>
-                    <button onClick={() => setViewing(v)} className="w-full flex justify-between gap-2 rounded-md px-2 py-1.5 -mx-2 hover:bg-hover cursor-pointer">
+                    <button onClick={() => setViewing(v)} className="w-full flex justify-between gap-2 rounded-md px-2 py-2 -mx-2 hover:bg-hover cursor-pointer">
                       <span className={v.version === note.version ? 'text-fg font-medium' : 'text-muted'}>v{v.version}{v.version === note.version && ' · current'}</span>
-                      <span className="text-xs text-dim">{ago(v.timestamp)}</span>
+                      <span className="text-caption text-dim">{ago(v.timestamp)}</span>
                     </button>
                   </li>
                 ))}
@@ -209,19 +209,19 @@ export default function NotePage() {
         <div role="dialog" aria-modal="true" aria-label={`Version ${viewing.version}`} onClick={() => setViewing(null)}
           className="fixed inset-0 z-30 bg-black/50 grid place-items-center p-4">
           <div onClick={e => e.stopPropagation()} className="w-full max-w-2xl max-h-[85vh] flex flex-col rounded-2xl border border-line bg-surface shadow-2xl">
-            <div className="flex items-center justify-between gap-3 px-5 h-14 border-b border-line">
-              <p className="text-sm"><span className="font-semibold">Version {viewing.version}</span> <span className="text-dim">· {ago(viewing.timestamp)}</span></p>
-              <button onClick={() => setViewing(null)} aria-label="Close" className="h-8 w-8 grid place-items-center rounded-lg text-muted hover:bg-hover cursor-pointer"><X size={16} /></button>
+            <div className="flex items-center justify-between gap-3 px-6 h-14 border-b border-line">
+              <p className="text-small"><span className="font-semibold">Version {viewing.version}</span> <span className="text-dim">· {ago(viewing.timestamp)}</span></p>
+              <button onClick={() => setViewing(null)} aria-label="Close" className="h-8 pointer-coarse:h-11 w-8 pointer-coarse:w-11 grid place-items-center rounded-lg text-muted hover:bg-hover cursor-pointer"><X size={16} /></button>
             </div>
             <div className="overflow-y-auto px-6 py-6">
-              {viewing.title && <h2 className="font-serif text-2xl font-medium mb-4">{viewing.title}</h2>}
+              {viewing.title && <h2 className="font-serif text-h3 font-medium mb-4">{viewing.title}</h2>}
               {viewing.content.trim() ? <MarkdownView content={viewing.content} notes={notes} /> : <p className="text-dim">Empty.</p>}
             </div>
-            <div className="flex justify-end gap-2 px-5 py-3 border-t border-line">
-              <button onClick={() => setViewing(null)} className="rounded-lg px-4 h-9 text-sm hover:bg-hover cursor-pointer">Close</button>
+            <div className="flex justify-end gap-2 px-6 py-3 border-t border-line">
+              <button onClick={() => setViewing(null)} className="rounded-lg px-4 h-9 pointer-coarse:h-11 text-small hover:bg-hover cursor-pointer">Close</button>
               <button disabled={viewing.version === note.version}
                 onClick={() => { setDraft(d => ({ ...d, content: viewing.content, title: viewing.title === undefined ? d.title : viewing.title === 'Untitled' ? '' : viewing.title })); setViewing(null); }}
-                className="inline-flex items-center gap-2 rounded-lg bg-accent text-ink px-4 h-9 text-sm font-semibold cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed">
+                className="inline-flex items-center gap-2 rounded-lg bg-accent text-ink px-4 h-9 pointer-coarse:h-11 text-small font-semibold cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed">
                 <RotateCcw size={14} /> Restore this version
               </button>
             </div>
@@ -233,6 +233,6 @@ export default function NotePage() {
 }
 
 const Panel = ({ title, children }: { title: string; children: ReactNode }) => (
-  <section><h2 className="text-[11px] font-semibold uppercase tracking-wider text-dim mb-2">{title}</h2>{children}</section>
+  <section><h2 className="text-caption font-semibold uppercase tracking-wider text-dim mb-2">{title}</h2>{children}</section>
 );
-const Empty = ({ children }: { children: ReactNode }) => <p className="text-xs text-dim leading-relaxed">{children}</p>;
+const Empty = ({ children }: { children: ReactNode }) => <p className="text-caption text-dim">{children}</p>;
